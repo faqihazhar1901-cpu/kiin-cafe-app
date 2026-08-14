@@ -115,6 +115,25 @@ const menuData = [
   }
 ];
 
+// Helper to get image based on category
+const getImageUrl = (category) => {
+    const lower = category.toLowerCase();
+    if (lower.includes('coffee') || lower.includes('brew')) {
+        return 'https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=400&q=80';
+    } else if (lower.includes('tea') || lower.includes('yakult') || lower.includes('frappe')) {
+        return 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80';
+    } else if (lower.includes('milk')) {
+        return 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&q=80';
+    } else if (lower.includes('noodle')) {
+        return 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&q=80';
+    } else if (lower.includes('rice') || lower.includes('food')) {
+        return 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80';
+    } else {
+        return 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400&q=80'; // snacks
+    }
+};
+
+
 // State
 let cart = [];
 let activeCategory = menuData[0].category;
@@ -131,6 +150,14 @@ const cartItemsContainer = document.getElementById('cart-items');
 const cartTotalPrice = document.getElementById('cart-total-price');
 const checkoutBtn = document.getElementById('checkout-btn');
 const toast = document.getElementById('toast');
+
+// Receipt Elements
+const receiptOverlay = document.getElementById('receipt-overlay');
+const receiptModal = document.getElementById('receipt-modal');
+const receiptContent = document.getElementById('receipt-content');
+const closeReceiptBtn = document.getElementById('close-receipt-btn');
+const sendWaBtn = document.getElementById('send-wa-btn');
+
 
 // Format Currency
 const formatIDR = (number) => {
@@ -175,7 +202,9 @@ const renderMenu = () => {
         categoryData.items.forEach(item => {
             const div = document.createElement('div');
             div.className = 'menu-item';
+            const imgUrl = item.image || getImageUrl(categoryData.category);
             div.innerHTML = `
+                <img src="${imgUrl}" alt="${item.name}" class="item-image" loading="lazy">
                 <div class="item-info">
                     <h3 class="item-name">${item.name}</h3>
                     ${item.description ? `<p class="item-desc">${item.description}</p>` : ''}
@@ -268,6 +297,45 @@ const updateCartUI = () => {
     checkoutBtn.disabled = false;
 };
 
+// Receipt Logic
+const generateReceipt = () => {
+    const date = new Date().toLocaleString('id-ID');
+    const orderId = 'ORD-' + Math.floor(Math.random() * 100000);
+    let totalAmount = 0;
+    
+    let itemsHtml = '';
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        totalAmount += itemTotal;
+        itemsHtml += `
+            <div class="receipt-item">
+                <div class="receipt-item-name">${item.quantity}x ${item.name}</div>
+                <div>${formatIDR(itemTotal)}</div>
+            </div>
+        `;
+    });
+
+    receiptContent.innerHTML = `
+        <div class="receipt-header">
+            <h3>KIIN COFFEE & CRAFT</h3>
+            <p>Order ID: ${orderId}</p>
+            <p>${date}</p>
+        </div>
+        <div class="receipt-items">
+            ${itemsHtml}
+        </div>
+        <div class="receipt-total">
+            <span>TOTAL</span>
+            <span>${formatIDR(totalAmount)}</span>
+        </div>
+        <div class="receipt-footer">
+            <p>Terima kasih atas pesanan Anda!</p>
+            <p>Tunjukkan struk ini di kasir atau lanjutkan via WA.</p>
+        </div>
+    `;
+};
+
+
 // Toast
 const showToast = () => {
     toast.classList.add('show');
@@ -290,7 +358,23 @@ const closeCart = () => {
 closeCartBtn.addEventListener('click', closeCart);
 cartOverlay.addEventListener('click', closeCart);
 
+
+// Checkout logic - Show Receipt
 checkoutBtn.addEventListener('click', () => {
+    generateReceipt();
+    closeCart();
+    receiptOverlay.classList.add('active');
+    receiptModal.classList.add('active');
+});
+
+// Close Receipt
+closeReceiptBtn.addEventListener('click', () => {
+    receiptOverlay.classList.remove('active');
+    receiptModal.classList.remove('active');
+});
+
+// Send WA
+sendWaBtn.addEventListener('click', () => {
     let orderText = 'Halo Kiin Coffee, saya mau pesan:%0A%0A';
     let total = 0;
     cart.forEach(item => {
@@ -302,6 +386,7 @@ checkoutBtn.addEventListener('click', () => {
     // Open WhatsApp
     window.open(`https://wa.me/6281234567890?text=${orderText}`, '_blank');
 });
+
 
 // Initialize
 renderCategories();
