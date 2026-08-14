@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiin Coffee & Craft - Order App</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <!-- App Container -->
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <h1>Kiin</h1>
+                <p>Coffee & Craft</p>
+            </div>
+            <button class="cart-btn" id="open-cart-btn">
+                <i class="ri-shopping-cart-2-line"></i>
+                <span class="cart-badge" id="cart-badge">0</span>
+            </button>
+        </header>
+
+        <!-- Category Navigation -->
+        <nav class="category-nav" id="category-nav">
+            <!-- Categories will be rendered here -->
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="menu-grid" id="menu-grid">
+                <!-- Menu items will be rendered here -->
+            </div>
+        </main>
+
+        <!-- Cart Sidebar/Modal -->
+        <div class="cart-overlay" id="cart-overlay"></div>
+        <aside class="cart-sidebar" id="cart-sidebar">
+            <div class="cart-header">
+                <h2>Pesanan Anda</h2>
+                <button class="close-cart" id="close-cart-btn">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be rendered here -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total</span>
+                    <span id="cart-total-price">Rp 0</span>
+                </div>
+                <button class="checkout-btn" id="checkout-btn">Pesan Sekarang</button>
+            </div>
+        </aside>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast">Item ditambahkan ke keranjang</div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
